@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvalSRE - AI Incident-to-Regression Engineering Pipeline</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge">SRE</div>
+      <div>
+        <h1>EvalSRE <span class="tag">AI Reliability Suite</span></h1>
+        <p class="subtitle">Incident-to-Regression Pipeline: Turning Chatbot Failures into Immutable Pytest Suites</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="btn-download-suite" class="btn btn-secondary">Download Pytest Suite (.py)</button>
+      <button id="btn-export-md" class="btn btn-outline">Export Incident Audit (MD)</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Top KPI Grid -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Incidents</span>
+        <span class="kpi-value" id="kpi-total">--</span>
+        <span class="kpi-subtext" id="kpi-total-desc">Tracked production regressions</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Open SEV-1 Blockers</span>
+        <span class="kpi-value" id="kpi-sev1">--</span>
+        <span class="kpi-subtext" id="kpi-sev1-desc">Critical safety/factuality failures</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Resolution Rate</span>
+        <span class="kpi-value" id="kpi-resolution">--</span>
+        <span class="kpi-subtext" id="kpi-resolution-desc">Patched & verified regressions</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Synthesized Tests</span>
+        <span class="kpi-value" id="kpi-tests">--</span>
+        <span class="kpi-subtext" id="kpi-tests-desc">CI/CD regression gates created</span>
+      </div>
+    </section>
+
+    <!-- Workspace Split -->
+    <div class="content-split">
+      <!-- Left: Incidents Table -->
+      <section class="panel incidents-panel">
+        <div class="panel-header">
+          <h2>Production Incident Ledger (<span id="incident-count">0</span>)</h2>
+          <div class="filter-controls">
+            <label><input type="checkbox" id="filter-sev1" /> Show SEV-1 Only</label>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Severity</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Fingerprint</th>
+              </tr>
+            </thead>
+            <tbody id="incidents-table-body">
+              <tr>
+                <td colspan="5" class="empty-state">Loading incidents...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Right: Regression Test Synthesizer -->
+      <section class="panel synthesizer-panel">
+        <div class="panel-header">
+          <h2>Regression Test Synthesizer</h2>
+          <button id="btn-synthesize" class="btn btn-primary btn-sm">Synthesize Pytest</button>
+        </div>
+        <div class="synthesizer-content" id="synth-empty">
+          <p class="placeholder-text">Select an incident from the ledger to inspect prompt context and synthesize an automated regression test fixture.</p>
+        </div>
+        <div class="synthesizer-content hidden" id="synth-body">
+          <div class="detail-group">
+            <label>Incident Details (<span id="synth-inc-id">--</span>)</label>
+            <div id="synth-title" class="title-text"></div>
+          </div>
+          <div class="detail-group">
+            <label>Adversarial / Failing Prompt</label>
+            <div id="synth-prompt" class="detail-box code-box"></div>
+          </div>
+          <div class="detail-group">
+            <label>Failing Output vs Expected Behavior</label>
+            <div class="comparison-grid">
+              <div class="comp-box comp-failing">
+                <span class="comp-label">Observed Failure</span>
+                <p id="synth-failing"></p>
+              </div>
+              <div class="comp-box comp-expected">
+                <span class="comp-label">Required Patched Behavior</span>
+                <p id="synth-expected"></p>
+              </div>
+            </div>
+          </div>
+          <div class="detail-group">
+            <div class="code-header">
+              <label>Synthesized Pytest Test Case</label>
+              <button id="btn-copy-code" class="btn btn-outline btn-xs">Copy Code</button>
+            </div>
+            <pre class="code-editor"><code id="synth-code"># Click 'Synthesize Pytest' above to generate test fixture</code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
